@@ -1,0 +1,34 @@
+{
+  "name": "qpm_brain",
+  "version": "0.0.1",
+  "description": "brain wallet functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solid-live/brain.git"
+  },
+  "author": "Melvin Carvalho <melvincarvalho@gmail.com> (https://melvincarvalho.com/#me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/solid-live/brain/issues"
+  },
+  "homepage": "https://github.com/solid-live/brain#readme",
+  "dependencies": {
+    "cron": "^1.1.0",
+    "file-exists": "^1.0.0",
+    "kue": "^0.11.1",
+    "mysql": "^2.10.2",
+    "path": "^0.12.7",
+    "podcatcher": "^0.2.1",
+    "rdf-shell": "^0.1.36",
+    "rdflib": "^0.7.0",
+    "redwrap": "0.0.4",
+    "sequelize": "^3.23.2",
+    "sqlite3": "^3.1.1",
+    "wc_db": "0.0.4",
+    "x-ray": "^2.3.0"
+  }
+}
