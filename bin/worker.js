@@ -1,27 +1,20 @@
 #!/usr/bin/env node
 
-var CronJob       = require('cron').CronJob
-var child_process = require('child_process')
-var kue           = require('kue')
+var find = require('../')
 
-// init
-var queue = kue.createQueue({
-  prefix: 'q',
-  redis: {
-    port: 6380
-  }
-})
+var strToAddr = find.strToAddr
 
-var mid      = process.argv[2] || "Z"
 
-// job
-var job = queue.create('11', {
-  "title": '11 unknowns search',
-  "mid": mid,
-  "end" : "/#me1"
-}).save( function(err){
-  if( !err ) {
-    console.log( job.id )
-  }
-  process.exit()
-})
+
+/**
+ * version as a command
+ */
+function bin(argv) {
+  var address = strToAddr(argv[2])
+  console.log(address.toString())
+}
+
+// If one import this file, this is a module, otherwise a library
+if (require.main === module) {
+  bin(process.argv)
+}
