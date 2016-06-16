@@ -5,9 +5,15 @@ var child_process = require('child_process')
 var kue           = require('kue')
 
 // init
-var interval = 4
-var queue    = kue.createQueue()
+var interval = 1
 
+var kue = require('kue');
+var queue = kue.createQueue({
+  prefix: 'q',
+  redis: {
+    port: 6380
+  }
+});
 
 // cron
 new CronJob('*/'+ interval +' * * * * *', function() {
@@ -44,7 +50,7 @@ queue.activeCount( function( err, total ) { // others are activeCount, completeC
 
 
 // server
-kue.app.listen(3002)
+kue.app.listen(3333)
 
 
 // process

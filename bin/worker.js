@@ -5,15 +5,20 @@ var child_process = require('child_process')
 var kue           = require('kue')
 
 // init
-var queue    = kue.createQueue()
+var queue = kue.createQueue({
+  prefix: 'q',
+  redis: {
+    port: 6380
+  }
+})
 
-var cmd      = process.argv[2] || 'ls'
+var mid      = process.argv[2] || "Z"
 
 // job
-var job = queue.create('cmd', {
-  "title": 'run child process'
-  , "cmd": cmd
-  , "extra": 'extra field'
+var job = queue.create('11', {
+  "title": '11 unknowns search',
+  "mid": mid,
+  "end" : "/#me1"
 }).save( function(err){
   if( !err ) {
     console.log( job.id )

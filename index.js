@@ -1,1 +1,1 @@
-module.exports = require('./lib/solidbot')
+module.exports = require('./lib/brain')
