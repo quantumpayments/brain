@@ -1,6 +1,6 @@
 {
   "name": "qpm_brain",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "brain wallet functions",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/solid-live/brain#readme",
   "dependencies": {
+    "array-last": "^1.1.1",
+    "console.table": "^0.7.0",
     "cron": "^1.1.0",
     "file-exists": "^1.0.0",
     "kue": "^0.11.1",
