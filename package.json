@@ -1,10 +1,10 @@
 {
   "name": "qpm_brain",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "brain wallet functions",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -32,5 +32,8 @@
     "sqlite3": "^3.1.1",
     "wc_db": "0.0.4",
     "x-ray": "^2.3.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
   }
 }
