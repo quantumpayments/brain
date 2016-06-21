@@ -5,7 +5,8 @@ var child_process = require('child_process')
 var kue           = require('kue')
 
 // init
-var interval = 1
+var interval = 60
+var length   = '11'
 
 var kue = require('kue');
 var queue = kue.createQueue({
@@ -13,7 +14,8 @@ var queue = kue.createQueue({
   redis: {
     port: 6380
   }
-});
+})
+
 
 // cron
 new CronJob('*/'+ interval +' * * * * *', function() {
@@ -23,36 +25,29 @@ new CronJob('*/'+ interval +' * * * * *', function() {
 }, null, true, 'America/Los_Angeles')
 
 
-queue.process('cmd', function(job, done){
+// process queue
+queue.process(length, function(job, done){
   console.log(job.data)
   console.log('running : ' + job.data.title);
-  var cmd = job.data.cmd
+  var cmd = '/var/www/ld/quantumpayments/brain/bin/worker.js "' + job.data.mid + job.data.end + '"'
+  console.log(cmd);
   child_process.exec(cmd, function(err, stdout, stderr){
     if (err) {
       console.error(err);
-      setTimeout(done, interval*1000)
-      //done()
+      done()
     } else {
       console.log(stdout);
-      setTimeout(done, interval*1000)
-      //done()
+      done()
     }
   })
 })
 
 
+// check queue
 queue.activeCount( function( err, total ) { // others are activeCount, completeCount, failedCount, delayedCount
   console.log(total)
-  if (total === 0) {
-    setTimeout(nextJob, interval*1000)
-  }
 })
 
 
 // server
 kue.app.listen(3333)
-
-
-// process
-function nextJob() {
-}
