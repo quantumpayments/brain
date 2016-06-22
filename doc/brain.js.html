@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: brain.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: brain.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>#!/usr/bin/env node
+
+module.exports = {
+  both      : both,
+  check     : check,
+  strToAddr : strToAddr,
+  success   : success
+}
+
+
+// requires
+var bitcore = require('bitcore-lib')
+var debug   = require('debug')('qpm_brain:brain')
+var fs      = require('fs')
+
+
+// globals
+var ascii = {
+"31": "",    "32": " ",    "33": "!",    "34": "\"",    "35": "#",
+"36": "$",    "37": "%",    "38": "&amp;",    "39": "'",    "40": "(",
+"41": ")",    "42": "*",    "43": "+",    "44": ",",    "45": "-",
+"46": ".",    "47": "/",    "48": "0",    "49": "1",    "50": "2",
+"51": "3",    "52": "4",    "53": "5",    "54": "6",    "55": "7",
+"56": "8",    "57": "9",    "58": ":",    "59": ";",    "60": "&lt;",
+"61": "=",    "62": ">",    "63": "?",    "64": "@",    "65": "A",
+"66": "B",    "67": "C",    "68": "D",    "69": "E",    "70": "F",
+"71": "G",    "72": "H",    "73": "I",    "74": "J",    "75": "K",
+"76": "L",    "77": "M",    "78": "N",    "79": "O",    "80": "P",
+"81": "Q",    "82": "R",    "83": "S",    "84": "T",    "85": "U",
+"86": "V",    "87": "W",    "88": "X",    "89": "Y",    "90": "Z",
+"91": "[",    "92": "\\",    "93": "]",    "94": "^",    "95": "_",
+"96": "`",    "97": "a",    "98": "b",    "99": "c",    "100": "d",
+"101": "e",    "102": "f",    "103": "g",    "104": "h",    "105": "i",
+"106": "j",    "107": "k",    "108": "l",    "109": "m",    "110": "n",
+"111": "o",    "112": "p",    "113": "q",    "114": "r",    "115": "s",
+"116": "t",    "117": "u",    "118": "v",    "119": "w",    "120": "x",
+"121": "y",    "122": "z",    "123": "{",    "124": "|",    "125": "}",
+"126": "~",    "127": ""
+};
+
+
+
+/**
+ * Check a needle in a haystack with possible * wildcard
+ * @param  {string}  needle   The string to search.
+ * @param  {string}  haystack Array to search in.
+ * @param  {boolean} wild     Whether * wildcards are used
+ * @param  {boolean} silent   Whether to output file and text
+ * @return {boolean} true on success.
+ */
+function check(needle, haystack, wild, silent) {
+
+  if (wild !== false) {
+    wild = true
+  }
+
+  haystack = haystack || require('../data/data.js')
+  needle = [].concat( needle )
+  for (var i = 0; i &lt; needle.length; i++) {
+    var ret = test(needle[i], haystack, wild, silent)
+    if (ret) {
+      return true
+    }
+  }
+
+  return false
+
+}
+
+
+/**
+ * Tests a needle against possible haystack.
+ * @param  {string}  needle   The string to search.
+ * @param  {string}  haystack Array to search in.
+ * @param  {boolean} wild     Whether * wildcards are used
+ * @param  {boolean} silent   Whether to output file and text
+ * @return {boolean} true on success.
+ */
+function test(needle, haystack, wild, silent) {
+
+  // check for wilds
+  var a = []
+  if (wild) {
+    a = needle.split('*')
+    // no wilds
+    if (a.length === 1) {
+      var ret = both(needle, haystack, silent)
+      if (ret) {
+        return true
+      }
+    // one wildcard
+    } else if (a.length === 2) {
+      for (var i = 31; i &lt; 128; i++) {
+        var str = a[0] + ascii[i] + a[1]
+        var ret = both(str, haystack, silent)
+        if (ret) {
+          return true
+        }
+      }
+    } else if (a.length === 3) {
+      for (var i = 31; i &lt; 128; i++) {
+        for (var j = 31; j &lt; 128; j++) {
+          var str = a[0] + ascii[i] + a[1] + ascii[j] + a[2]
+          var ret = both(str, haystack, silent)
+          if (ret) {
+            return true
+          }
+        }
+      }
+    }
+  } else {
+    var ret = both(needle, haystack, silent)
+    if (ret) {
+      return true
+    }
+  }
+
+  return false
+
+}
+
+
+/**
+ * Check both compressed and uncompressed.
+ * @param  {string}  needle   The string to search for.
+ * @param  {Array}   haystack An array of addresses.
+ * @param  {boolean} silent   Whether to output file and text
+ * @return {boolean} true on success.
+ */
+function both(needle, haystack, silent) {
+
+  var address = strToAddr(needle, true)
+  debug(needle)
+  debug(address)
+  if ( haystack.indexOf(address.toString()) !== -1 ) {
+    if (!silent) {
+      console.log('not silent')
+      success(needle)
+    }
+    return true
+  }
+
+  var address = strToAddr(needle, false)
+  debug(needle)
+  debug(address)
+  if ( haystack.indexOf(address.toString()) !== -1 ) {
+    if (!silent) {
+      console.log(silent)
+      success(needle)
+    }
+    return true
+  }
+
+  return false
+
+}
+
+
+/**
+ * Prints success message and writes a file to data directory
+ * @param {string} needle String that was checked.
+ * @param {string} file   The file to save to.
+ */
+function success(needle, file) {
+
+  console.log('######################################################################################################################################################################################################################################################################################################################################################################################## success!!')
+
+  file = file || __dirname + '/../data/' + 'success.txt'
+  fs.writeFile(file, needle, function(err) {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('saved file to ' + file);
+    }
+  })
+
+}
+
+
+/**
+ * Converts string to a bitcoin public key address
+ * @param  {String}  str          The string to be hashed
+ * @param  {boolean} uncompressed Uncompressed or not
+ * @return {Object}               Public Key Address
+ */
+function strToAddr(str, uncompressed) {
+
+  // hash string
+  var value = new Buffer(str)
+  var hash = bitcore.crypto.Hash.sha256(value)
+
+  // convert string to private key
+  var bn = bitcore.crypto.BN.fromBuffer(hash)
+  var privateKey = new bitcore.PrivateKey(bn)
+  var publicKeyCompressed = new bitcore.PublicKey(privateKey)
+
+  // return public key
+  if (uncompressed) {
+    var pointx = publicKeyCompressed.point.x.toString('hex')
+    var pointy = publicKeyCompressed.point.y.toString('hex')
+
+    //padding left
+    pointx = String("00000000" + pointx).slice(-64)
+    pointy = String("00000000" + pointy).slice(-64)
+
+    var publicKeyUncompressed = new bitcore.PublicKey('04' + pointx + pointy)
+    var addressUncompressed = publicKeyUncompressed.toAddress()
+    return addressUncompressed
+  } else {
+    var addressCompressed   = publicKeyCompressed.toAddress()
+    return addressCompressed
+  }
+
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#both">both</a></li><li><a href="global.html#check">check</a></li><li><a href="global.html#strToAddr">strToAddr</a></li><li><a href="global.html#success">success</a></li><li><a href="global.html#test">test</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jun 22 2016 16:49:00 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
