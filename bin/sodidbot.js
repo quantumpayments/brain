@@ -9,12 +9,8 @@ var interval = 60
 var length   = '11'
 
 var kue = require('kue');
-var queue = kue.createQueue({
-  prefix: 'q',
-  redis: {
-    port: 6380
-  }
-})
+var config = require('../config/config')
+var queue = kue.createQueue(config.kue)
 
 
 // cron
