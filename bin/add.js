@@ -6,12 +6,15 @@ var kue = require('kue')
 // init
 var queue = bot.createQueue()
 var mid      = process.argv[2] || "Z"
+var end      = process.argv[3] || "Z"
+
+
 
 var job = {'11':
   {
     "title": '11 unknowns search',
     "mid": mid,
-    "end" : "/#me1"
+    "end" : end
   }
 }
 
