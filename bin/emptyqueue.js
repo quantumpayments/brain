@@ -1,19 +1,10 @@
 #!/usr/bin/env node
 
 require('console.table')
-var kue       = require('kue')
-var rdf       = require('rdf-shell')
-var Sequelize = require('sequelize')
+var bot = require('../').bot
+var kue = require('kue')
 
-
-// init
-var interval = 4
-var queue = kue.createQueue({
-  prefix: 'q',
-  redis: {
-    port: 6380
-  }
-})
+var queue = bot.createQueue()
 
 var items    = []
 

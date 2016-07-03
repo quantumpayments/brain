@@ -1,6 +1,6 @@
 {
   "name": "qpm_brain",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "brain wallet functions",
   "main": "index.js",
   "scripts": {
