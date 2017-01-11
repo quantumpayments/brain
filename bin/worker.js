@@ -4,8 +4,7 @@ module.exports = bin
 
 var find = require('../')
 
-var check     = find.check
-var strToAddr = find.strToAddr
+var checkTrialsInAddresses = find.checkTrialsInAddresses
 
 var n = require('../data/data.js')
 
@@ -16,8 +15,8 @@ var stem = process.env['STEM'] || ''
 /**
  * version as a command
  */
-function bin(argv) {
-  var ret = check(stem + argv[2])
+function bin (argv) {
+  var ret = checkTrialsInAddresses(stem + argv[2], n)
   console.log(ret)
 }
 
