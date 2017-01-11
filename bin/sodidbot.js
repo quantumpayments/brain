@@ -1,49 +1,49 @@
 #!/usr/bin/env node
 
-var CronJob       = require('cron').CronJob
-var child_process = require('child_process')
-var kue           = require('kue')
+var CronJob = require('cron').CronJob
+var exec = require('child_process').exec
 
 // init
 var interval = 60
-var length   = '11'
+var length = '11'
 
-var kue = require('kue');
 var config = require('../config/config')
+var kue = require('kue')
 var queue = kue.createQueue(config.kue)
 
-
 // cron
-new CronJob('*/'+ interval +' * * * * *', function() {
-  console.log('Running Cron every '+ interval +' seconds')
-
-
-}, null, true, 'America/Los_Angeles')
-
+try {
+  new CronJob('*/' + interval + ' * * * * *', function () {
+    console.log('Running Cron every ' + interval + ' seconds')
+  }, null, true, 'America/Los_Angeles')
+} catch (e) {
+  console.error(e)
+}
 
 // process queue
-queue.process(length, function(job, done){
+queue.process(length, function (job, done) {
   console.log(job.data)
-  console.log('running : ' + job.data.title);
+  console.log('running : ' + job.data.title)
   var cmd = '/var/www/ld/quantumpayments/brain/bin/worker.js "' + job.data.mid + job.data.end + '"'
-  console.log(cmd);
-  child_process.exec(cmd, function(err, stdout, stderr){
+  console.log(cmd)
+  exec(cmd, function (err, stdout, stderr) {
     if (err) {
-      console.error(err);
+      console.error(err)
       done()
     } else {
-      console.log(stdout);
+      console.log(stdout)
       done()
     }
   })
 })
 
-
-// check queue
-queue.activeCount( function( err, total ) { // others are activeCount, completeCount, failedCount, delayedCount
-  console.log(total)
+queue.activeCount(function (err, total) { // others are activeCount, completeCount, failedCount, delayedCount
+  if (err) {
+    console.error(err)
+  } else {
+    console.log(total)
+  }
 })
-
 
 // server
 kue.app.listen(3333)
