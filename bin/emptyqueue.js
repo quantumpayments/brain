@@ -8,23 +8,27 @@ var queue = bot.createQueue()
 
 var items    = []
 
-queue.complete( function( err, ids ) { // others are active, complete, failed, delayed
+queue.inactive( function( err, ids ) { // others are active, complete, failed, delayed
   // you may want to fetch each id to get the Job object out of it...
   for (var i = 0; i < ids.length; i++) {
-    //console.log(ids[i])
+    console.log('id', ids[i])
     kue.Job.get( ids[i], function( err, job ) {
       // Your application should check if job is a stuck one
-      var data = job.data
+      //console.log('data', job.data);
+      //var data = job.data
       //console.log(img);
       //items.push(job)
-      job.remove(function(err){
-      if (err) throw err;
-        console.log('removed completed job');
-      })
+      if (err) {
+        console.error(err);
+      } else {
+        job.remove(function(err){
+          console.log('removed completed job');
+        })
+      }
     })
   }
 
-  setTimeout(process, 2000)
+  setTimeout(process, 20000)
 
 
 
