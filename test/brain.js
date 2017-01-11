@@ -8,48 +8,21 @@ var haystack = [
 
 describe('Brain Functions', function () {
 
-  describe('strToAddr', function() {
+  describe('stringToAddress', function() {
 
-    it('strToAddr is a function', function () {
-      expect(( brain.strToAddr )).to.be.a('function')
+    it('stringToAddress is a function', function () {
+      expect(( brain.stringToAddress )).to.be.a('function')
     })
 
-    it('test strToAddr(\'correcthorsebatterystaple\').toString() = \'1aZamxMGppDGiZahCUoBqUGVRU94JBehf\'', function () {
-      expect(( brain.strToAddr('correcthorsebatterystaple').toString() )).to.equal('1aZamxMGppDGiZahCUoBqUGVRU94JBehf')
+    it('test stringToAddress(\'correcthorsebatterystaple\', true).toString() = \'1aZamxMGppDGiZahCUoBqUGVRU94JBehf\'', function () {
+      expect(( brain.stringToAddress('correcthorsebatterystaple', true).toString() )).to.equal('1aZamxMGppDGiZahCUoBqUGVRU94JBehf')
     })
 
-    it('test strToAddr(\'correcthorsebatterystaple\', true).toString() = \'1KqAv2r2iebeEhkoKonksJwwPczwBjLMXC\'', function () {
-      expect(( brain.strToAddr('correcthorsebatterystaple', true).toString() )).to.equal('1KqAv2r2iebeEhkoKonksJwwPczwBjLMXC')
-    })
-
-  })
-
-  describe('both', function() {
-
-    it('both is a function', function () {
-      expect(( brain.both )).to.be.a('function')
-    })
-
-    it('test both(\'correcthorsebatterystaple\', [\'1aZamxMGppDGiZahCUoBqUGVRU94JBehf\'], true) = \'1aZamxMGppDGiZahCUoBqUGVRU94JBehf\'', function () {
-      expect(( brain.both('correcthorsebatterystaple', haystack, true) )).to.equal(true)
+    it('test stringToAddress(\'correcthorsebatterystaple\', false).toString() = \'1KqAv2r2iebeEhkoKonksJwwPczwBjLMXC\'', function () {
+      expect(( brain.stringToAddress('correcthorsebatterystaple', false).toString() )).to.equal('1KqAv2r2iebeEhkoKonksJwwPczwBjLMXC')
     })
 
   })
 
-  describe('check', function() {
-
-    it('check is a function', function () {
-      expect(( brain.check )).to.be.a('function')
-    })
-
-    it('test check(\'correcthorsebatterystaple\', [\'1aZamxMGppDGiZahCUoBqUGVRU94JBehf\'], false, true) = \'1aZamxMGppDGiZahCUoBqUGVRU94JBehf\'', function () {
-      expect(( brain.check('correcthorsebatterystaple', haystack, false, true) )).to.equal(true)
-    })
-
-    it('test check(\'correcthorsebatt*rystaple\', [\'1aZamxMGppDGiZahCUoBqUGVRU94JBehf\'], true, true) = \'1aZamxMGppDGiZahCUoBqUGVRU94JBehf\'', function () {
-      expect(( brain.check('correcthorsebatt*rystaple', haystack, true, true) )).to.equal(true)
-    })
-
-  })
 
 })
